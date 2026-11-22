@@ -1,0 +1,97 @@
+/* Bangladesh localisation: Bangla font, top bar, WhatsApp button, contact extras */
+
+/* Bangla text: Hind Siliguri renders conjuncts correctly; Latin falls back to the theme fonts */
+body.lang-bn,
+body.lang-bn h1, body.lang-bn h2, body.lang-bn h3, body.lang-bn h4, body.lang-bn h5, body.lang-bn h6,
+body.lang-bn p, body.lang-bn a, body.lang-bn li, body.lang-bn span:not([class*="flaticon"]):not(.fa),
+body.lang-bn .btn, body.lang-bn input, body.lang-bn textarea, body.lang-bn button, body.lang-bn label {
+  font-family: "Hind Siliguri", "Nunito", sans-serif;
+}
+body.lang-bn p { line-height: 1.8; }
+
+.bd-topbar {
+  background: #1f2a37;
+  color: #e5e7eb;
+  font-size: 13px;
+  padding: 6px 0;
+}
+.bd-topbar a, .bd-topbar span { color: #e5e7eb; margin-right: 18px; }
+.bd-topbar a:hover { color: #E7CD78; }
+.bd-topbar .fa { margin-right: 5px; color: #E7CD78; }
+
+.bd-lang a { color: inherit; margin: 0 4px; }
+.bd-lang a.active { color: #E7CD78; font-weight: 700; }
+.bd-topbar .bd-lang span { margin: 0; }
+
+.bd-whatsapp-float {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff !important;
+  font-size: 30px;
+  line-height: 54px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+  z-index: 9999;
+}
+.bd-whatsapp-float:hover { background: #1ebe5b; }
+
+.bd-feature { padding: 30px 25px; background: #fff; border-radius: 8px; margin-bottom: 30px; height: calc(100% - 30px); }
+.bd-feature .fa { font-size: 34px; color: #E7CD78; margin-bottom: 15px; }
+.bd-feature h4 { margin-bottom: 10px; }
+
+.bd-steps { counter-reset: step; padding-left: 0; list-style: none; }
+.bd-steps li { position: relative; padding: 0 0 18px 52px; }
+.bd-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #E7CD78; color: #fff; font-weight: 700;
+  text-align: center; line-height: 36px;
+}
+
+.bd-map iframe { width: 100%; height: 380px; border: 0; display: block; }
+
+.bd-honeypot { position: absolute; left: -9999px; }
+
+.contact_localtion .content_list a { color: inherit; }
+
+@media (max-width: 575px) {
+  .inner_page_breadcrumb .breadcrumb_title { font-size: 30px; line-height: 1.25; }
+}
+
+/* Logo */
+.bd-logo { height: 58px; width: auto; margin-top: 8px; }
+.mobile-menu .bd-logo { height: 46px; margin-top: 8px; }
+.bd-footer-logo { height: 64px; width: auto; margin-bottom: 15px; }
+
+/* Group businesses */
+.bd-business { display: block; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.06); margin-bottom: 30px; color: inherit; }
+.bd-business:hover { box-shadow: 0 8px 26px rgba(0,0,0,.12); color: inherit; }
+.bd-business-img { height: 230px; background-size: cover; background-position: center; }
+.bd-business .p25 h4 { margin-bottom: 6px; }
+.bd-business .bd-tag { display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #b8962e; margin-bottom: 6px; }
+
+/* Real estate page */
+.bd-dev-hero { background-size: cover; background-position: center; color: #fff; padding: 90px 0 100px; }
+.bd-dev-hero h1 { color: #fff; font-size: 44px; margin: 10px 0 12px; }
+.bd-dev-hero .lead { color: #e5e7eb; font-size: 19px; }
+.bd-dev-hero .breadcrumb { background: transparent; padding: 0; margin-bottom: 20px; }
+.bd-dev-hero .breadcrumb a, .bd-dev-hero .breadcrumb-item.active, .bd-dev-hero .breadcrumb-item + .breadcrumb-item::before { color: #e5e7eb; }
+.bd-dev-hero-logo { height: 70px; width: auto; }
+.bd-rounded { border-radius: 10px; }
+.bd-project { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,.08); margin-bottom: 30px; }
+.bd-project-img { position: relative; height: 260px; background-size: cover; background-position: center; }
+.bd-badge { position: absolute; top: 15px; left: 15px; background: #E7CD78; color: #fff; font-weight: 700; padding: 4px 12px; border-radius: 4px; font-size: 13px; }
+.p25 { padding: 25px; }
+@media (max-width: 575px) {
+  .bd-dev-hero { padding: 50px 0 60px; }
+  .bd-dev-hero h1 { font-size: 32px; }
+  .bd-dev-hero .btn { display: block; margin-left: 0 !important; margin-bottom: 10px; }
+}
+.bd-feature { box-shadow: 0 4px 18px rgba(0,0,0,.06); }

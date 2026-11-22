@@ -1,32 +1,29 @@
 <?php
 
+use App\Http\Controllers\ContactController;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'welcome');
 
-Route::get('/contact', function () {
-    return view('contact');
-});
+Route::view('/contact', 'contact');
+Route::post('/contact', [ContactController::class, 'send'])
+    ->middleware('throttle:5,1')
+    ->name('contact.send');
 
-Route::get('/our-management', function () {
-    return view('management');
-});
+Route::view('/our-management', 'management');
+Route::view('/development', 'development');               // FMB Developments Ltd (real estate)
+Route::view('/garments/services', 'garments-services');
 
-Route::get('/development', function () {
-    return view('development');
-});
+Route::view('/collection/men-knit', 'collection-men-knit');
+Route::view('/collection/women-knit', 'collection-women-knit');
+Route::view('/collection/kid-knit', 'collection-kid-knit');
+Route::view('/collection/home-tex', 'collection-home-tex');
 
-Route::get('/collection/men-knit', function () {
-    return view('collection-men-knit');
-});
-Route::get('/collection/women-knit', function () {
-    return view('collection-women-knit');
-});
-Route::get('/collection/kid-knit', function () {
-    return view('collection-kid-knit');
-});
-Route::get('/collection/home-tex', function () {
-    return view('collection-home-tex');
-});
+// Language switch: English / বাংলা
+Route::get('/lang/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, SetLocale::SUPPORTED, true), 404);
+    session(['locale' => $locale]);
+
+    return back();
+})->name('lang.switch');
