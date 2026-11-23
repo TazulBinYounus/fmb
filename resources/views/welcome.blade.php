@@ -1,46 +1,44 @@
 @extends('layout')
 
-@section('title', __('Garments Sourcing & Real Estate in Dhaka, Bangladesh'))
+{{-- Title, description and sharing image come from Admin → Homepage & settings → SEO. --}}
 
 @section('content')
 
-@php
-  $slides = [
-    ['img' => 'home/15.webp', 'title' => 'FMB GROUP', 'text' => __('Knit, Woven & Sweater Sourcing from Bangladesh'), 'btn' => __('Request a Quote'), 'link' => '/contact'],
-    ['img' => 'background/5.jpg', 'title' => 'FMB DEVELOPMENTS', 'text' => __('Premium Apartments in Dhaka'), 'btn' => __('View Projects'), 'link' => '/development'],
-    ['img' => 'home/14.webp', 'title' => 'FMB GROUP', 'text' => __('Quality Checked at Every Stage'), 'btn' => __('Request a Quote'), 'link' => '/contact'],
-  ];
-@endphp
-
+@if ($banners->isNotEmpty())
 <div class="home10-mainslider">
     <div class="container-fluid p0">
         <div class="row">
             <div class="col-lg-12">
                 <div class="main-banner-wrapper home10">
                     <div class="banner-style-one owl-theme owl-carousel">
-                        @foreach ($slides as $slide)
-                        <div class="slide slide-one" style="background-image: url({{ asset('assets/images/' . $slide['img']) }});height: 620px;">
+                        @foreach ($banners as $banner)
+                        <div class="slide slide-one" style="background-image: url('{{ media_url($banner->image) }}');background-position: {{ $banner->image_position }};height: 620px;">
                             <div class="container">
                                 <div class="row home-content">
                                     <div class="col-lg-12 text-center p0">
-                                        <h3 class="banner-title">{{ $slide['title'] }}</h3>
-                                        <p>{{ $slide['text'] }}</p>
-                                        <div class="btn"><a href="{{ url($slide['link']) }}" class="banner-btn">{{ $slide['btn'] }}</a></div>
+                                        <h3 class="banner-title">{{ $banner->tr('title') }}</h3>
+                                        @if ($banner->tr('subtitle'))<p>{{ $banner->tr('subtitle') }}</p>@endif
+                                        @if ($banner->button_text && $banner->button_link)
+                                          <div class="btn"><a href="{{ str_starts_with($banner->button_link, '/') ? url($banner->button_link) : $banner->button_link }}" class="banner-btn">{{ $banner->tr('button_text') }}</a></div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @endforeach
                     </div>
+                    @if ($banners->count() > 1)
                     <div class="carousel-btn-block banner-carousel-btn">
                         <span class="carousel-btn left-btn"><i class="flaticon-left-arrow-1 left"></i></span>
                         <span class="carousel-btn right-btn"><i class="flaticon-right-arrow right"></i></span>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endif
 
 <!-- Who we are -->
 <section class="about-section">
@@ -48,18 +46,19 @@
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
                 <div class="main-title text-center">
-                    <h2 class="mt0">{{ __('Who we are') }}</h2>
-                    <p>{{ __('Delivering top-quality products at competitive prices') }}</p>
+                    <h2 class="mt0">{{ setting('home_about_title', __('Who we are'), true) }}</h2>
+                    @if (setting('home_about_subtitle'))<p>{{ setting('home_about_subtitle', '', true) }}</p>@endif
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-8 col-xl-7">
                 <div class="about_content">
-                    <p class="large">{{ __('FMB Group, located in Dhaka, Bangladesh') }}</p>
-                    <p>{{ __('FMB Group, based in Dhaka, Bangladesh, is a garments buying and trading house specializing in the manufacturing, export, and sourcing of high-quality sweaters, woven, and knit items. We collaborate with trusted factories to ensure that every product meets our standards of quality and style. From initial production planning to regular communication and updates with our clients, we handle all stages of the process, including in-line inspections, shipping schedule management, and final dispatch of documents.') }}</p>
-                    <p>{{ __('With a dedicated team of experienced professionals, FMB Group is committed to delivering top-quality products at competitive prices. We believe that building long-term success requires trust, reliability, and consistently meeting client expectations.') }}</p>
-                    <p>{{ __('The group also builds homes in Dhaka through its real estate concern, FMB Developments Ltd.') }} <a href="{{ url('/development') }}" class="text-thm">{{ __('Learn more') }} →</a></p>
+                    @if (setting('home_about_lead'))<p class="large">{{ setting('home_about_lead', '', true) }}</p>@endif
+                    @foreach (preg_split('/\R{2,}/', (string) setting('home_about_text', '', true)) as $paragraph)
+                        @if (trim($paragraph) !== '')<p>{!! nl2br(e(trim($paragraph))) !!}</p>@endif
+                    @endforeach
+                    <p>{{ __('The group also builds homes in Dhaka through its real estate concern, FMB Developments Ltd.') }} <a href="{{ route('development') }}" class="text-thm">{{ __('Learn more') }} →</a></p>
 
                     <ul class="ab_counting">
                         <li class="list-inline-item">
@@ -94,7 +93,7 @@
             </div>
             <div class="col-lg-4 col-xl-5">
                 <div class="about_thumb">
-                    <img class="img-fluid w100" style="height:420px;object-fit:cover;border-radius:8px" src="{{ asset('assets/images/home/15.webp') }}" alt="{{ __('Knit garments sourced by FMB Group') }}">
+                    <img class="img-fluid w100" style="height:420px;object-fit:cover;object-position:30% center;border-radius:8px" src="{{ media_url(setting('home_about_image'), 'assets/images/banner/banner-qc.jpg') }}" alt="{{ __('Fabric quality check at a Bangladeshi garment factory') }}">
                 </div>
             </div>
         </div>
@@ -114,8 +113,8 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <a class="bd-business" href="{{ url('/garments/services') }}">
-                    <div class="bd-business-img" style="background-image:url({{ asset('assets/images/home/15.webp') }})"></div>
+                <a class="bd-business" href="{{ route('garments.services') }}">
+                    <div class="bd-business-img" style="background-image:url({{ asset('assets/images/banner/banner-factory.jpg') }})"></div>
                     <div class="p25">
                         <span class="bd-tag">{{ __('Garments') }}</span>
                         <h4>{{ __('FMB Group – Garments Buying House') }}</h4>
@@ -125,12 +124,12 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a class="bd-business" href="{{ url('/development') }}">
+                <a class="bd-business" href="{{ route('development') }}">
                     <div class="bd-business-img" style="background-image:url({{ asset('assets/images/background/5.jpg') }})"></div>
                     <div class="p25">
                         <span class="bd-tag">{{ __('Real Estate') }}</span>
                         <h4>FMB Developments Ltd</h4>
-                        <p>{{ __('Premium building and property development in Dhaka, including our upcoming project in Bashundhara Riverview.') }}</p>
+                        <p>{{ __('Premium building and property development in Dhaka.') }}</p>
                         <span class="text-thm">{{ __('Learn more') }} →</span>
                     </div>
                 </a>
@@ -139,8 +138,26 @@
     </div>
 </section>
 
+<!-- Featured projects (Admin → Projects → ★) -->
+@if ($featuredProjects->isNotEmpty())
+<section class="pt50 pb30">
+    <div class="container">
+        <div class="main-title text-center">
+            <h2>{{ __('Featured Projects') }}</h2>
+            <p>{{ __('Apartments by FMB Developments Ltd') }}</p>
+        </div>
+        <div class="row justify-content-center">
+            @foreach ($featuredProjects as $project)
+                <div class="col-md-6 col-lg-4">@include('partials.project-card', ['project' => $project])</div>
+            @endforeach
+        </div>
+        <div class="text-center"><a href="{{ route('projects.index') }}" class="btn btn-lg btn-outline-secondary">{{ __('All Projects') }}</a></div>
+    </div>
+</section>
+@endif
+
 <!-- Product lines -->
-<section class="pb30">
+<section class="{{ $featuredProjects->isNotEmpty() ? 'bgc-f7' : '' }} pb30">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
@@ -172,7 +189,7 @@
 </section>
 
 <!-- Why Choose Us -->
-<section id="why-chose" class="whychose_us bgc-f7 pb30">
+<section id="why-chose" class="whychose_us {{ $featuredProjects->isNotEmpty() ? '' : 'bgc-f7' }} pb30">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
@@ -202,13 +219,18 @@
     </div>
 </section>
 
+@include('partials.testimonials', ['testimonials' => $testimonials])
+@include('partials.faqs', ['faqs' => $faqs, 'id' => 'home-faq'])
+
 <!-- Call to action -->
-<section class="pt50 pb50">
+<section class="pt50 pb50 {{ $faqs->isNotEmpty() ? 'bgc-f7' : '' }}">
     <div class="container text-center">
-        <h2>{{ __('Planning your next order?') }}</h2>
-        <p class="mb30">{{ __('Send us your tech pack or sample and we will get back to you with a quotation.') }}</p>
-        <a href="{{ url('/contact') }}" class="btn btn-lg btn-thm">{{ __('Request a Quote') }}</a>
-        <a href="https://wa.me/8801612149719" target="_blank" rel="noopener" class="btn btn-lg btn-success ml10"><i class="fa fa-whatsapp"></i> {{ __('WhatsApp Us') }}</a>
+        <h2>{{ setting('home_cta_title', __('Planning your next order?'), true) }}</h2>
+        @if (setting('home_cta_text'))<p class="mb30">{{ setting('home_cta_text', '', true) }}</p>@endif
+        <a href="{{ route('contact') }}" class="btn btn-lg btn-thm">{{ __('Request a Quote') }}</a>
+        @if (setting('whatsapp'))
+          <a href="https://wa.me/{{ setting('whatsapp') }}" target="_blank" rel="noopener" class="btn btn-lg btn-success ml10"><i class="fa fa-whatsapp"></i> {{ __('WhatsApp Us') }}</a>
+        @endif
     </div>
 </section>
 

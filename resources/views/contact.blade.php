@@ -1,8 +1,18 @@
 @extends('layout')
 
-@section('title', __('Contact Us'))
+@section('title', $page?->seo_title ?: ($page?->tr('title') ?: __('Contact Us')))
+@if ($page?->seo_description)
+  @section('description', $page->seo_description)
+@endif
 
 @section('content')
+
+@php
+  $phone = setting('phone');
+  $email = setting('email');
+  $wa = setting('whatsapp');
+  $mapQuery = setting('map_query');
+@endphp
 
 <section class="inner_page_breadcrumb">
   <div class="container">
@@ -13,7 +23,7 @@
             <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ __('Home') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ __('Contact') }}</li>
           </ol>
-          <h4 class="breadcrumb_title">{{ __('Contact Us') }}</h4>
+          <h4 class="breadcrumb_title">{{ $page?->tr('title') ?: __('Contact Us') }}</h4>
         </div>
       </div>
     </div>
@@ -26,23 +36,11 @@
       <div class="col-lg-7 col-xl-8">
         <div class="form_grid">
           <h4 class="mb5">{{ __('Send Us an Enquiry') }}</h4>
-          <p>{{ __('Tell us about the product, quantity and target price. Our merchandising team will get back to you soon (Saturday – Thursday).') }}</p>
+          @if ($page?->tr('content'))
+            <div class="bd-richtext">{!! $page->tr('content') !!}</div>
+          @endif
 
-          @if (session('contact_success'))
-            <div class="alert alert-success">{{ __('Thank you! Your message has been sent. We will contact you soon.') }}</div>
-          @endif
-          @if (session('contact_error'))
-            <div class="alert alert-danger">{{ __('Sorry, your message could not be sent. Please email or WhatsApp us directly.') }}</div>
-          @endif
-          @if ($errors->any())
-            <div class="alert alert-danger">
-              <ul class="mb0">
-                @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-          @endif
+          @include('partials.form-alerts')
 
           <form class="contact_form" id="contact_form" action="{{ route('contact.send') }}" method="post">
             @csrf
@@ -94,42 +92,57 @@
       <div class="col-lg-5 col-xl-4">
         <div class="contact_localtion">
           <h4>{{ __('Contact Us') }}</h4>
-          <p>{{ __('FMB Group, based in Dhaka, Bangladesh, is a garments buying and trading house specializing in the manufacturing, export, and sourcing of high-quality sweaters, woven, and knit items.') }}</p>
+          <p>{{ setting('footer_about', '', true) }}</p>
           <div class="content_list">
             <h5>{{ __('Address') }}</h5>
-            <p>{{ __('174, East Dholipar, Jatrabari') }}<br>{{ __('Dhaka 1204, Bangladesh') }}</p>
+            <p>{{ setting('address_line1', '', true) }}@if (setting('address_line2'))<br>{{ setting('address_line2', '', true) }}@endif</p>
           </div>
+          @if ($phone)
           <div class="content_list">
             <h5>{{ __('Phone') }}</h5>
-            <p><a href="tel:+8801612149719">+880 1612-149719</a></p>
+            <p><a href="tel:{{ $phone }}">{{ setting('phone_display', $phone) }}</a></p>
           </div>
+          @endif
+          @if ($wa)
           <div class="content_list">
             <h5>WhatsApp</h5>
-            <p><a href="https://wa.me/8801612149719" target="_blank" rel="noopener"><i class="fa fa-whatsapp"></i> +880 1612-149719</a></p>
+            <p><a href="https://wa.me/{{ $wa }}" target="_blank" rel="noopener"><i class="fa fa-whatsapp"></i> {{ setting('phone_display', '+'.$wa) }}</a></p>
           </div>
+          @endif
+          @if ($email)
           <div class="content_list">
             <h5>{{ __('Email') }}</h5>
-            <p><a href="mailto:info@fmbgroupbd.com">info@fmbgroupbd.com</a></p>
+            <p><a href="mailto:{{ $email }}">{{ $email }}</a></p>
           </div>
+          @endif
+          @if (setting('real_estate_phone') || setting('real_estate_email'))
           <div class="content_list">
             <h5>{{ __('Real Estate (FMB Developments Ltd)') }}</h5>
-            <p><a href="tel:+8801312149719">01312-149719</a><br><a href="mailto:fmb@fmbgroupbd.com">fmb@fmbgroupbd.com</a></p>
+            <p>
+              @if (setting('real_estate_phone'))<a href="tel:{{ setting('real_estate_phone') }}">{{ setting('real_estate_phone_display', setting('real_estate_phone')) }}</a><br>@endif
+              @if (setting('real_estate_email'))<a href="mailto:{{ setting('real_estate_email') }}">{{ setting('real_estate_email') }}</a>@endif
+            </p>
           </div>
+          @endif
+          @if (setting('office_hours'))
           <div class="content_list">
             <h5>{{ __('Office Hours') }}</h5>
-            <p>{{ __('Saturday – Thursday: 9:00 AM – 6:00 PM') }}<br>{{ __('Friday & government holidays: closed') }}<br><small>{{ __('Bangladesh Standard Time (GMT+6)') }}</small></p>
+            <p>{{ setting('office_hours', '', true) }}<br><small>{{ __('Bangladesh Standard Time (GMT+6)') }}</small></p>
           </div>
+          @endif
         </div>
       </div>
     </div>
   </div>
 </section>
 
+@if ($mapQuery)
 <section class="bd-map pt0 pb0">
   <iframe
     title="{{ __('FMB Group location on Google Maps') }}"
-    src="https://maps.google.com/maps?q={{ rawurlencode('East Dholipar, Jatrabari, Dhaka 1204, Bangladesh') }}&z=15&output=embed"
+    src="https://maps.google.com/maps?q={{ rawurlencode($mapQuery) }}&z=15&output=embed"
     loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </section>
+@endif
 
 @endsection

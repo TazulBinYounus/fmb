@@ -1,14 +1,14 @@
 @extends('layout')
 
 @section('title', __('FMB Developments Ltd – Real Estate'))
-@section('description', __('FMB Developments Ltd, a concern of FMB Group, builds and sells apartments in Dhaka. Upcoming project in Bashundhara Riverview Residential Area. Call 01312-149719.'))
+@section('description', __('FMB Developments Ltd, a concern of FMB Group, builds and sells apartments in Dhaka.'))
 
 @section('content')
 
 @php
-  $devPhone = '+8801312149719';
-  $devPhoneDisplay = '01312-149719';
-  $devEmail = 'fmb@fmbgroupbd.com';
+  $devPhone = setting('real_estate_phone', setting('phone'));
+  $devPhoneDisplay = setting('real_estate_phone_display', $devPhone);
+  $devEmail = setting('real_estate_email', setting('email'));
 @endphp
 
 <!-- Hero -->
@@ -24,7 +24,7 @@
         <h1>FMB Developments Ltd</h1>
         <p class="lead">{{ __('Your trusted partner for premium building & property development solutions in Dhaka.') }}</p>
         <a href="tel:{{ $devPhone }}" class="btn btn-lg btn-thm mt10"><i class="fa fa-phone"></i> {{ $devPhoneDisplay }}</a>
-        <a href="{{ url('/contact') }}?type=property" class="btn btn-lg btn-outline-light mt10 ml10">{{ __('Book a Site Visit') }}</a>
+        <a href="{{ $projects->isNotEmpty() ? route('project.show', $projects->first()->slug).'#visit' : route('contact', ['type' => 'property']) }}" class="btn btn-lg btn-outline-light mt10 ml10">{{ __('Book a Site Visit') }}</a>
       </div>
     </div>
   </div>
@@ -66,6 +66,9 @@
           <i class="fa {{ $icon }}"></i>
           <h4>{{ __($title) }}</h4>
           <p>{{ __($text) }}</p>
+          @if ($icon === 'fa-handshake-o')
+            <a href="{{ route('landowners') }}" class="text-thm">{{ __('Learn more') }} →</a>
+          @endif
         </div>
       </div>
       @endforeach
@@ -82,34 +85,30 @@
         <p>{{ __('Contact us for floor plans, sizes, prices and booking.') }}</p>
       </div>
     </div>
-    {{-- TODO: replace the illustrative photo and add real project facts (land size, storeys, flat sizes, handover date) --}}
+    {{-- Projects are managed in Admin → Projects --}}
+    @if ($projects->isEmpty())
+      <p class="text-center text-muted">{{ __('New projects are coming soon. Contact us to register your interest.') }}</p>
+    @else
     <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <div class="bd-project">
-          <div class="bd-project-img" style="background-image:url({{ asset('assets/images/background/5.jpg') }})">
-            <span class="bd-badge">{{ __('Upcoming') }}</span>
-          </div>
-          <div class="p25">
-            <h4>{{ __('FMB Project – Bashundhara Riverview') }}</h4>
-            <p><i class="fa fa-map-marker text-thm mr5"></i> {{ __('Bashundhara Riverview Residential Area, Dhaka') }}</p>
-            <p>{{ __('Residential apartments for sale. Register your interest now to get details first.') }}</p>
-            <a href="tel:{{ $devPhone }}" class="btn btn-thm"><i class="fa fa-phone"></i> {{ __('Call for details') }}</a>
-            <a href="{{ url('/contact') }}?type=property" class="btn btn-outline-secondary ml5">{{ __('Register interest') }}</a>
-          </div>
-        </div>
-      </div>
+      @foreach ($projects as $project)
+        <div class="col-md-6 col-lg-4">@include('partials.project-card', ['project' => $project])</div>
+      @endforeach
     </div>
+    <div class="text-center"><a href="{{ route('projects.index') }}" class="btn btn-lg btn-outline-secondary">{{ __('All Projects') }}</a></div>
+    @endif
   </div>
 </section>
 
+@include('partials.faqs', ['faqs' => $faqs, 'id' => 'dev-faq', 'class' => 'bgc-f7 pt50 pb50'])
+
 <!-- CTA -->
-<section class="bgc-f7 pt50 pb50">
+<section class="{{ $faqs->isNotEmpty() ? '' : 'bgc-f7' }} pt50 pb50">
   <div class="container text-center">
     <h2>{{ __('Looking for a flat in Dhaka?') }}</h2>
     <p class="mb30">{{ __('Talk to our sales team or visit our office in Jatrabari.') }}</p>
-    <a href="tel:{{ $devPhone }}" class="btn btn-lg btn-thm"><i class="fa fa-phone"></i> {{ $devPhoneDisplay }}</a>
-    <a href="mailto:{{ $devEmail }}" class="btn btn-lg btn-outline-secondary ml10"><i class="fa fa-envelope"></i> {{ $devEmail }}</a>
-    <a href="https://www.facebook.com/fmbdevelopmentsltd" target="_blank" rel="noopener" class="btn btn-lg btn-primary ml10"><i class="fa fa-facebook"></i> {{ __('Follow on Facebook') }}</a>
+    @if ($devPhone)<a href="tel:{{ $devPhone }}" class="btn btn-lg btn-thm"><i class="fa fa-phone"></i> {{ $devPhoneDisplay }}</a>@endif
+    @if ($devEmail)<a href="mailto:{{ $devEmail }}" class="btn btn-lg btn-outline-secondary ml10"><i class="fa fa-envelope"></i> {{ $devEmail }}</a>@endif
+    @if (setting('facebook_url'))<a href="{{ setting('facebook_url') }}" target="_blank" rel="noopener" class="btn btn-lg btn-primary ml10"><i class="fa fa-facebook"></i> {{ __('Follow on Facebook') }}</a>@endif
   </div>
 </section>
 

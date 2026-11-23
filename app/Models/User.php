@@ -42,7 +42,15 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    /** is_admin is deliberately not mass-assignable; set it with forceFill() or the admin:create command. */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 }

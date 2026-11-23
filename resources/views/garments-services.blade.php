@@ -80,4 +80,6 @@
   </div>
 </section>
 
+@include('partials.faqs', ['faqs' => $faqs, 'id' => 'garments-faq', 'class' => 'bgc-f7 pt50 pb50'])
+
 @endsection
