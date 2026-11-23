@@ -75,7 +75,9 @@
                 $('.scroll-to-top').fadeOut(500);
             }
         };
-        if ($('.stricky').length) {
+        // Guard: this theme block needs a .header-navigation element. Without it every scroll threw
+        // "Cannot read properties of undefined (reading 'top')".
+        if ($('.stricky').length && $('.header-navigation').length) {
             var headerScrollPos = $('.header-navigation').next().offset().top;
             var stricky = $('.stricky');
             if ($(window).scrollTop() > headerScrollPos) {

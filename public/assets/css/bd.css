@@ -162,3 +162,67 @@ body.lang-bn p { line-height: 1.8; }
 .bd-filter .nav-link.active { background: #E7CD78; border-color: #E7CD78; color: #fff; }
 .bd-callout .h5 { color: #fff; }
 #overview, #units, #floor-plans { scroll-margin-top: 70px; }
+
+/* --- Home slider: compact height, content centred vertically ---------------------------
+   The theme used a fixed 165px top/bottom padding plus a 620px inline height, so the
+   heading sat in the upper part of a very tall banner. Here each slide is a flex box of
+   a fixed height and the content block is centred inside it on every screen size. */
+.home10-mainslider .banner-style-one .slide {
+  height: 480px;
+  padding: 0 90px;                     /* room for the side arrows */
+  display: flex !important;            /* owl sets display on items; keep flex */
+  align-items: center;
+  justify-content: center;
+}
+.home10-mainslider .banner-style-one .slide > .container { position: relative; z-index: 1; width: 100%; }
+.home10-mainslider .home-content { margin: 0 !important; padding: 0 !important; }
+.home10-mainslider .home-content > div { padding: 0; }
+.home10-mainslider .banner-style-one .banner-title { margin: 0 0 6px; line-height: 1.15; }
+.home10-mainslider .banner-style-one .home-content p { margin: 0; line-height: 1.5; }
+.home10-mainslider .banner-style-one .btn { margin: 0; padding: 0; }
+.home10-mainslider .banner-style-one .banner-btn { margin-top: 24px; padding: 14px 40px; font-size: 17px; }
+
+/* Arrows centred on the same line as the content */
+.home10-mainslider .main-banner-wrapper .carousel-btn-block { top: 50% !important; bottom: auto !important; }
+.home10-mainslider .main-banner-wrapper .carousel-btn-block { height: 0; }
+.home10-mainslider .main-banner-wrapper .carousel-btn-block .carousel-btn { top: 0; margin-top: 0; transform: translateY(-50%); }
+.home10-mainslider .main-banner-wrapper .carousel-btn-block .carousel-btn.left-btn { left: 24px; right: auto; }
+.home10-mainslider .main-banner-wrapper .carousel-btn-block .carousel-btn.right-btn { right: 24px; left: auto; }
+
+/* Tablet */
+@media (max-width: 991px) {
+  .home10-mainslider .banner-style-one .slide { height: 420px; padding: 0 70px; }
+  .home10-mainslider .banner-style-one .banner-title { font-size: 42px; }
+  .home10-mainslider .banner-style-one .home-content p { font-size: 21px; }
+}
+
+/* Phone: arrows hidden (swipe + dots instead) so the text gets the full width */
+@media (max-width: 575px) {
+  .home10-mainslider .banner-style-one .slide { height: 360px; padding: 0 16px; }
+  .home10-mainslider .banner-style-one .banner-title { font-size: 32px; }
+  .home10-mainslider .banner-style-one .home-content p { font-size: 17px; padding: 0; }
+  .home10-mainslider .banner-style-one .banner-btn { display: inline-block; margin-top: 18px; padding: 11px 28px; font-size: 15px; }
+  .home10-mainslider .main-banner-wrapper .carousel-btn-block { display: none; }
+  .home10-mainslider .banner-style-one .owl-dots { bottom: 16px; }
+}
+
+/* --- Header float fix + slider in a container ------------------------------------------
+   Root cause of the "left gap before scrolling": the logo (.navbar_brand.float-left) was never
+   cleared by the header. Its bottom edge touched the top of the slider, so the slider's flex
+   row was laid out beside the float (shifted right by the logo's width). After scrolling the
+   theme makes the header position:fixed, the float leaves the flow and the gap disappeared.
+   display:flow-root makes the header contain its own floats; clear:both on the slider is a
+   second safeguard. */
+header.header-nav, header.header-nav > .container, header.header-nav nav { display: flow-root; }
+.bd-hero { clear: both; padding-top: 24px; }
+.bd-hero .main-banner-wrapper { border-radius: 10px; overflow: hidden; }
+.bd-hero .banner-style-one .slide { padding: 0 80px; }
+@media (max-width: 991px) {
+  .bd-hero { padding-top: 20px; }
+  .bd-hero .banner-style-one .slide { padding: 0 64px; }
+}
+@media (max-width: 575px) {
+  .bd-hero { padding-top: 12px; }
+  .bd-hero .main-banner-wrapper { border-radius: 8px; }
+  .bd-hero .banner-style-one .slide { padding: 0 16px; }
+}

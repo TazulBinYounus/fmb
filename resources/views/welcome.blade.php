@@ -5,14 +5,13 @@
 @section('content')
 
 @if ($banners->isNotEmpty())
-<div class="home10-mainslider">
-    <div class="container-fluid p0">
-        <div class="row">
-            <div class="col-lg-12">
+{{-- Slider sits in a centred, responsive .container (equal space left and right). --}}
+<div class="home10-mainslider bd-hero">
+    <div class="container">
                 <div class="main-banner-wrapper home10">
                     <div class="banner-style-one owl-theme owl-carousel">
                         @foreach ($banners as $banner)
-                        <div class="slide slide-one" style="background-image: url('{{ media_url($banner->image) }}');background-position: {{ $banner->image_position }};height: 620px;">
+                        <div class="slide slide-one" style="background-image: url('{{ media_url($banner->image) }}');background-position: {{ $banner->image_position }};">
                             <div class="container">
                                 <div class="row home-content">
                                     <div class="col-lg-12 text-center p0">
@@ -34,10 +33,17 @@
                     </div>
                     @endif
                 </div>
-            </div>
-        </div>
     </div>
 </div>
+@push('scripts')
+<script>
+  // Owl Carousel measures its width once at start-up. Re-measure when everything (fonts, images,
+  // scrollbar) has loaded so the slides line up from the first paint, not only after a scroll/resize.
+  jQuery(window).on('load', function () {
+    jQuery('.banner-style-one').trigger('refresh.owl.carousel');
+  });
+</script>
+@endpush
 @endif
 
 <!-- Who we are -->
